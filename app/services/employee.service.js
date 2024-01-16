@@ -61,20 +61,20 @@ const create = async ({ employee, userId }) => {
       userId,
       employee.position,
       employee.name,
-      employee.identityNumber,
-      employee.placeAndDateOfBirth,
+      employee.identity_number,
+      employee.place_and_date_of_birth,
       employee.gender,
       employee.religion,
-      employee.bloodType,
-      employee.maritalStatus,
-      employee.addressInIdentityCard,
+      employee.blood_type,
+      employee.marital_status,
+      employee.address_in_identity_card,
       employee.address,
       employee.email,
-      employee.phoneNumber,
-      employee.emergencyContactName,
+      employee.phone_number,
+      employee.emergency_contact_name,
       employee.skills,
-      employee.readyToBePlaced,
-      employee.salaryExpectation,
+      employee.ready_to_be_placed,
+      employee.salary_expectation,
     ]
   );
 
@@ -104,6 +104,8 @@ const create = async ({ employee, userId }) => {
   // we check if the employee has training experiences or work experiences
   // if yes then we create them
   if (employee.trainingExperiences && employee.trainingExperiences.length > 0) {
+    console.log(employee.trainingExperiences);
+    
     trainingExperienceIds = await Promise.all(
       employee.trainingExperiences.map((trainingExperience) =>
         trainingExperienceService.create({ trainingExperience, employeeId })

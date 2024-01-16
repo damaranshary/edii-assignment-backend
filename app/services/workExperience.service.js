@@ -1,15 +1,16 @@
 import db from "./db.services.js";
 
 const create = async ({ workExperience, employeeId }) => {
+  console.log(employeeId);
   const [result] = await db.query(
     "INSERT INTO work_experiences " +
       "(candidate_employee_id, company_name, position, work_year, salary) " +
       "VALUES (?, ?, ?, ?, ?)",
     [
       employeeId,
-      workExperience.companyName,
+      workExperience.company_name,
       workExperience.position,
-      workExperience.workYear,
+      workExperience.work_year,
       workExperience.salary,
     ]
   );

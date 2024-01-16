@@ -1,11 +1,14 @@
 import express from "express";
 import employeeRouter from "./app/routes/employee.route.js";
 import authRouter from "./app/routes/auth.route.js";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to the API" });
