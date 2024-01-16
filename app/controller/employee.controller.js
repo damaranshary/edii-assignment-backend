@@ -29,7 +29,30 @@ const getOneEmployee = async (req, res) => {
   }
 };
 
+const createEmployee = async (req, res) => {
+  // console.log(req.body);
+  try {
+    const employeeId = await employeeService.create(req.body);
+
+    if (!employeeId) {
+      res.status(500).send({
+        message: "Error creating employee",
+      });
+    }
+
+    res.status(201).send({
+      message: "Employee created",
+      employee: employeeId,
+    });
+  } catch {
+    res.status(500).send({
+      message: "Error creating employee",
+    });
+  }
+};
+
 export default {
   getAllEmployees,
   getOneEmployee,
+  createEmployee,
 };
