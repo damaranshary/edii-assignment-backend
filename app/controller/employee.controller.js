@@ -11,6 +11,25 @@ const getAllEmployees = async (req, res) => {
   }
 };
 
+const getOneEmployee = async (req, res) => {
+  try {
+    const employee = await employeeService.getOne(req.params.id);
+
+    if (!employee) {
+      res.status(404).send({
+        message: `Employee with id ${req.params.id} not found`,
+      });
+    }
+
+    res.status(200).send(employee);
+  } catch {
+    res.status(500).send({
+      message: "Error retrieving employee with id " + req.params.id,
+    });
+  }
+};
+
 export default {
   getAllEmployees,
+  getOneEmployee,
 };
