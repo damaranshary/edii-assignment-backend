@@ -1,5 +1,6 @@
 import express from "express";
 import employeeRouter from "./app/routes/employee.route.js";
+import authRouter from "./app/routes/auth.route.js";
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/employees", employeeRouter);
+
+app.use("/api/auth", authRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

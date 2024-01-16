@@ -51,8 +51,30 @@ const createEmployee = async (req, res) => {
   }
 };
 
+const updateEmployee = async (req, res) => {
+  try {
+    const affectedRows = await employeeService.update(req.body, req.params.id);
+
+    if (!affectedRows) {
+      res.status(404).send({
+        message: `Employee with id ${req.params.id} not found`,
+      });
+    }
+
+    res.status(200).send({
+      message: "Employee updated",
+      affectedRows: affectedRows,
+    });
+  } catch {
+    res.status(500).send({
+      message: "Error updating employee with id " + req.params.id,
+    });
+  }
+};
+
 export default {
   getAllEmployees,
   getOneEmployee,
   createEmployee,
+  updateEmployee,
 };
