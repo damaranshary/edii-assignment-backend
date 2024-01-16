@@ -1,6 +1,7 @@
 {
   "name": "assignment-backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "a backend for EDII assignment (technical test)",
   "main": "app.js",
   "scripts": {
