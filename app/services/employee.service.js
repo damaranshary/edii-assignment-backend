@@ -55,7 +55,7 @@ const getOneById = async (id) => {
     "SELECT * FROM candidate_employees WHERE id = ?",
     [id]
   );
-  
+
   const workExperiences = await workExperienceService.getAllByEmployeeId(
     rows[0].id
   );
@@ -118,8 +118,6 @@ const create = async ({ employee, userId }) => {
   let trainingExperienceIds = [];
   let workExperienceIds = [];
 
-  // console.log(employee.lastEducations);
-
   // since last education is required when creating an employee,
   // and at the same time, an employee can have multiple last educations,
   // we need to create the last educations first, and then get the last education ids
@@ -133,8 +131,6 @@ const create = async ({ employee, userId }) => {
   // we check if the employee has training experiences or work experiences
   // if yes then we create them
   if (employee.trainingExperiences && employee.trainingExperiences.length > 0) {
-    console.log(employee.trainingExperiences);
-
     trainingExperienceIds = await Promise.all(
       employee.trainingExperiences.map((trainingExperience) =>
         trainingExperienceService.create({ trainingExperience, employeeId })
@@ -232,8 +228,6 @@ const update = async (updatedEmployee, id) => {
       )
     );
   }
-
-  console.log(employee);
 
   return result.affectedRows;
 };

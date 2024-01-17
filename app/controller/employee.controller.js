@@ -19,6 +19,7 @@ const getOneEmployeeByUserId = async (req, res) => {
       res.status(404).send({
         message: `Employee with id ${req.params.id} not found`,
       });
+      return;
     }
 
     res.status(200).send(employee);
@@ -37,6 +38,7 @@ const getOneEmployeeById = async (req, res) => {
       res.status(404).send({
         message: `Employee with id ${req.params.id} not found`,
       });
+      return;
     }
 
     res.status(200).send(employee);
@@ -48,7 +50,6 @@ const getOneEmployeeById = async (req, res) => {
 };
 
 const createEmployee = async (req, res) => {
-  // console.log(req.body);
   try {
     const employeeId = await employeeService.create(req.body);
 
@@ -56,12 +57,13 @@ const createEmployee = async (req, res) => {
       res.status(500).send({
         message: "Error creating employee",
       });
+      return;
+    } else {
+      res.status(201).send({
+        message: "Employee created",
+        employee: employeeId,
+      });
     }
-
-    res.status(201).send({
-      message: "Employee created",
-      employee: employeeId,
-    });
   } catch {
     res.status(500).send({
       message: "Error creating employee",
@@ -77,12 +79,13 @@ const updateEmployee = async (req, res) => {
       res.status(404).send({
         message: `Employee with id ${req.params.id} not found`,
       });
+      return;
+    } else {
+      res.status(200).send({
+        message: "Employee updated",
+        affectedRows: affectedRows,
+      });
     }
-
-    res.status(200).send({
-      message: "Employee updated",
-      affectedRows: affectedRows,
-    });
   } catch {
     res.status(500).send({
       message: "Error updating employee with id " + req.params.id,
@@ -98,6 +101,7 @@ const deleteEmployee = async (req, res) => {
       res.status(404).send({
         message: `Employee with id ${req.params.id} not found`,
       });
+      return;
     }
 
     res.status(200).send({

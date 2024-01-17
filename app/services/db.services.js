@@ -2,9 +2,6 @@ import mysql from "mysql2/promise.js";
 import dbConfig from "../config/db.config.js";
 
 const query = async (sql, params) => {
-//   console.log(sql);
-//   console.log(params);
-
   const connection = await mysql.createConnection(dbConfig);
   const results = await connection.execute(sql, params);
 
