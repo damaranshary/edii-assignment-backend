@@ -52,8 +52,18 @@ const update = async ({
   return result.affectedRows;
 };
 
+const deleteAllByEmployeeId = async (employeeId) => {
+  const [result] = await db.query(
+    "DELETE FROM last_educations WHERE candidate_employee_id = ?",
+    [employeeId]
+  );
+
+  return result.affectedRows;
+};
+
 export default {
   create,
   getAllByEmployeeId,
-  update
+  update,
+  deleteAllByEmployeeId,
 };

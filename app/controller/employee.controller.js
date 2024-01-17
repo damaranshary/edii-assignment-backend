@@ -11,9 +11,27 @@ const getAllEmployees = async (req, res) => {
   }
 };
 
-const getOneEmployee = async (req, res) => {
+const getOneEmployeeByUserId = async (req, res) => {
   try {
-    const employee = await employeeService.getOne(req.params.id);
+    const employee = await employeeService.getOne(req.params.userId);
+
+    if (!employee) {
+      res.status(404).send({
+        message: `Employee with id ${req.params.id} not found`,
+      });
+    }
+
+    res.status(200).send(employee);
+  } catch {
+    res.status(500).send({
+      message: "Error retrieving employee with id " + req.params.id,
+    });
+  }
+};
+
+const getOneEmployeeById = async (req, res) => {
+  try {
+    const employee = await employeeService.getOneById(req.params.id);
 
     if (!employee) {
       res.status(404).send({
@@ -72,9 +90,32 @@ const updateEmployee = async (req, res) => {
   }
 };
 
+const deleteEmployee = async (req, res) => {
+  try {
+    const affectedRows = await employeeService.deleteOne(req.params.id);
+
+    if (!affectedRows) {
+      res.status(404).send({
+        message: `Employee with id ${req.params.id} not found`,
+      });
+    }
+
+    res.status(200).send({
+      message: "Employee deleted",
+      affectedRows: affectedRows,
+    });
+  } catch {
+    res.status(500).send({
+      message: "Error deleting employee with id " + req.params.id,
+    });
+  }
+};
+
 export default {
   getAllEmployees,
-  getOneEmployee,
+  getOneEmployee: getOneEmployeeByUserId,
   createEmployee,
   updateEmployee,
+  deleteEmployee,
+  getOneEmployeeById,
 };

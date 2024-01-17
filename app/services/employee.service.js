@@ -55,10 +55,28 @@ const getOneById = async (id) => {
     "SELECT * FROM candidate_employees WHERE id = ?",
     [id]
   );
+  
+  const workExperiences = await workExperienceService.getAllByEmployeeId(
+    rows[0].id
+  );
 
-  //   console.log(rows[0]);
+  // same thing
+  const trainingExperiences =
+    await trainingExperienceService.getAllByEmployeeId(rows[0].id);
 
-  return rows[0];
+  // same thing
+  const lastEducations = await lastEducationService.getAllByEmployeeId(
+    rows[0].id
+  );
+
+  const data = {
+    ...rows[0],
+    workExperiences: workExperiences ? workExperiences : [],
+    trainingExperiences: trainingExperiences ? trainingExperiences : [],
+    lastEducations: lastEducations ? lastEducations : [],
+  };
+
+  return data;
 };
 
 const create = async ({ employee, userId }) => {
@@ -220,9 +238,30 @@ const update = async (updatedEmployee, id) => {
   return result.affectedRows;
 };
 
+const deleteOne = async (id) => {
+  await Promise.all([
+    workExperienceService.deleteAllByEmployeeId(id),
+    trainingExperienceService.deleteAllByEmployeeId(id),
+    lastEducationService.deleteAllByEmployeeId(id),
+  ]);
+
+  const [result] = await db.query(
+    "DELETE FROM candidate_employees WHERE id = ?",
+    [id]
+  );
+
+  if (!result.affectedRows) {
+    return null;
+  }
+
+  return result.affectedRows;
+};
+
 export default {
   getAll,
   getOne,
   create,
   update,
+  deleteOne,
+  getOneById,
 };
