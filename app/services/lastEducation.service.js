@@ -27,7 +27,33 @@ const getAllByEmployeeId = async (employeeId) => {
   return rows;
 };
 
+const update = async ({
+  level,
+  institution,
+  major,
+  graduation_year,
+  grade,
+  id,
+  candidate_employee_id,
+}) => {
+  const [result] = await db.query(
+    "UPDATE last_educations SET level = ?, institution = ?, major = ?, graduation_year = ?, grade = ? WHERE id = ? AND candidate_employee_id = ?",
+    [
+      level,
+      institution,
+      major,
+      graduation_year,
+      grade,
+      id,
+      candidate_employee_id,
+    ]
+  );
+
+  return result.affectedRows;
+};
+
 export default {
   create,
   getAllByEmployeeId,
+  update
 };

@@ -50,6 +50,17 @@ const getOne = async (userId) => {
   return data;
 };
 
+const getOneById = async (id) => {
+  const [rows] = await db.query(
+    "SELECT * FROM candidate_employees WHERE id = ?",
+    [id]
+  );
+
+  //   console.log(rows[0]);
+
+  return rows[0];
+};
+
 const create = async ({ employee, userId }) => {
   const [result] = await db.query(
     "INSERT INTO candidate_employees " +
@@ -105,7 +116,7 @@ const create = async ({ employee, userId }) => {
   // if yes then we create them
   if (employee.trainingExperiences && employee.trainingExperiences.length > 0) {
     console.log(employee.trainingExperiences);
-    
+
     trainingExperienceIds = await Promise.all(
       employee.trainingExperiences.map((trainingExperience) =>
         trainingExperienceService.create({ trainingExperience, employeeId })
@@ -131,8 +142,9 @@ const create = async ({ employee, userId }) => {
 
 // special for update service, in the employee objects we actually only passing
 // the employee data (wihtout any other data (child table) such as work experiences, training experiences, etc)
-const update = async ({ updatedEmployee, id }) => {
-  const currentEmployeeData = await getOne(id);
+const update = async (updatedEmployee, id) => {
+  const currentEmployeeData = await getOneById(id);
+  const { employee: employeeData } = updatedEmployee;
 
   if (!currentEmployeeData) {
     return null;
@@ -140,37 +152,70 @@ const update = async ({ updatedEmployee, id }) => {
 
   const employee = {
     ...currentEmployeeData,
-    ...updatedEmployee,
+    ...employeeData,
   };
 
   const [result] = await db.query(
-    "UPDATE candidate_employees SET " +
-      "position = ?, name = ?, identity_number = ?, place_and_date_of_birth = ?, " +
-      "gender = ?, religion = ?, blood_type = ?, marital_status = ?, " +
-      "address_in_identity_card = ?, address = ?, email = ?, " +
-      "phone_number = ?, emergency_contact_name = ?, skills = ?, " +
-      "ready_to_be_placed = ?, salary_expectation = ? " +
-      "WHERE id = ?",
+    `UPDATE candidate_employees SET 
+      position = ?, name = ?, identity_number = ?, place_and_date_of_birth = ?, 
+      gender = ?, religion = ?, blood_type = ?, marital_status = ?, 
+      address_in_identity_card = ?, address = ?, email = ?, 
+      phone_number = ?, emergency_contact_name = ?, skills = ?, 
+      ready_to_be_placed = ?, salary_expectation = ?  
+      WHERE id = ?`,
     [
       employee.position,
       employee.name,
-      employee.identityNumber,
-      employee.placeAndDateOfBirth,
+      employee.identity_number,
+      employee.place_and_date_of_birth,
       employee.gender,
       employee.religion,
-      employee.bloodType,
-      employee.maritalStatus,
-      employee.addressInIdentityCard,
+      employee.blood_type,
+      employee.marital_status,
+      employee.address_in_identity_card,
       employee.address,
       employee.email,
-      employee.phoneNumber,
-      employee.emergencyContactName,
+      employee.phone_number,
+      employee.emergency_contact_name,
       employee.skills,
-      employee.readyToBePlaced,
-      employee.salaryExpectation,
+      employee.ready_to_be_placed,
+      employee.salary_expectation,
       id,
     ]
   );
+
+  if (!result.affectedRows) {
+    return null;
+  }
+
+  // we check if there is a training experiences data in the employee object updated
+  if (employee.trainingExperiences && employee.trainingExperiences.length > 0) {
+    await Promise.all(
+      employee.trainingExperiences.map((trainingExperience) =>
+        trainingExperienceService.update(trainingExperience)
+      )
+    );
+  }
+
+  // same thing
+  if (employee.workExperiences && employee.workExperiences.length > 0) {
+    await Promise.all(
+      employee.workExperiences.map((workExperience) =>
+        workExperienceService.update(workExperience)
+      )
+    );
+  }
+
+  // same thing
+  if (employee.lastEducations && employee.lastEducations.length > 0) {
+    await Promise.all(
+      employee.lastEducations.map((lastEducation) =>
+        lastEducationService.update(lastEducation)
+      )
+    );
+  }
+
+  console.log(employee);
 
   return result.affectedRows;
 };

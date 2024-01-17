@@ -9,4 +9,6 @@ router.get("/:id", employeeController.getOneEmployee);
 
 router.post("/", employeeController.createEmployee);
 
+router.put("/:id", employeeController.updateEmployee);
+
 export default router;
